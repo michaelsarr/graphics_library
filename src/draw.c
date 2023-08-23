@@ -8,11 +8,11 @@ or not?
 void setPixel(int16_t x, int16_t y, uint8_t color) 
 {
 
-      RIA_ADDR0 = (x / 2) + (y * (WIDTH / 2));
-    RIA_RW0 &= ~(240 << ((x % 2) * 4));
-    RIA_RW0 |= (color << ((x % 2) * 4));
-  /*
-printf("%d,%d : %d\n",x,y,color);
+ //   RIA_ADDR0 = (x / 2) + (y * (WIDTH / 2));
+ //   RIA_RW0 &= ~(240 << ((x % 2) * 4));
+ //   RIA_RW0 |= (color << ((x % 2) * 4));
+
+//printf("%d,%d : %d\n",x,y,color);
     RIA_ADDR0 = (x / 2) + (y * (WIDTH / 2));
     if (x%2)
       {
@@ -24,7 +24,7 @@ printf("%d,%d : %d\n",x,y,color);
       RIA_RW0 &= 240;
       RIA_RW0 |= (color);
       }  
-*/
+
 }
 
 

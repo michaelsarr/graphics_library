@@ -82,42 +82,37 @@ void main()
 int16_t loop=0;
 int16_t loop2=0;
 uint8_t color=2;
-RIA_STEP0 = 0;
+int16_t x,y,r,c;
+
+
 vmode(1);
 
-   // wait();
+
     erase();
     RIA_ADDR0 = 0;
-    RIA_STEP0 = 1;
+    RIA_STEP0 = 0;// oh man i missed this for a while.. really throws off trying to write when the thing is incrmenting
 
-    
- //   for ( color =1 ; color < 16;color ++)    
- //       for (loop =0;loop<180;loop++)
- //                plot_line(loop,0,180-loop,220,(uint8_t) color);
- // plot_circle(100,100,50,1); 
-  //raster_circle(200,200,25,1); 
-
- // plot_ellipse_rect ( 10, 30,  75,  30, 2);
-
-     plot_line(5,2,5,100,(uint8_t) color);
-         plot_line(6,2,6,100,(uint8_t) color);
-         
-for (loop =0;loop<180;loop++)
-  {
-  plot_line(loop,10,loop,50,(uint8_t) color);
-  for (loop2 =0;loop2<1000;loop2++)
-        puts(" ");
+    while(1)
+    {
   
-  }
+    for (loop =0;loop<WIDTH;loop++)
 
+            plot_line(loop,0,WIDTH-1-loop,240,(loop / 15)+1);
 
-     plot_circle(100,100,50,1); 
+    for (loop =0;loop<HEIGHT;loop++)
+            plot_line(0,loop,WIDTH-1,HEIGHT-1-loop ,(loop / 15)+1);
 
-
-     plot_line(29,2,29,100,(uint8_t) color);     
-
-     plot_line(0,180,100,180,(uint8_t) color); 
-              while(1){     }
+    for (loop2=0;loop2<10;loop2++)
+      {
+      r=(rand16()%25) +5;    
+      x=rand16()%(320-r);
+      y=rand16()%(240-r);
+      c=rand16()%16;
+      for (loop =0;loop<r;loop++)
+        raster_circle(x,y,loop,c); 
+      }
+    wait();
+    }
     }
 
 
