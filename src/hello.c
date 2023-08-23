@@ -88,15 +88,14 @@ int16_t x,y,r,c;
 vmode(1);
 
 
-    erase();
-    RIA_ADDR0 = 0;
-    RIA_STEP0 = 0;// oh man i missed this for a while.. really throws off trying to write when the thing is incrmenting
+ 
 
     while(1)
     {
-  
+     erase();
+    RIA_ADDR0 = 0;
+    RIA_STEP0 = 0;// oh man i missed this for a while.. really throws off trying to plot a point when a read incrments it (that what seemed to be going on)
     for (loop =0;loop<WIDTH;loop++)
-
             plot_line(loop,0,WIDTH-1-loop,240,(loop / 15)+1);
 
     for (loop =0;loop<HEIGHT;loop++)
