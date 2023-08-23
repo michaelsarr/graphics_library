@@ -24,4 +24,7 @@
             "visibility": "hidden"
         },
     },
+    "files.associations": {
+        "stdint.h": "c"
+    },
 }
