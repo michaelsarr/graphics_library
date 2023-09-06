@@ -28,6 +28,7 @@ typedef int32_t fint32_t;
 static void vmode(uint16_t data)
 {
     xreg(data, 0, 1);
+   // xreg(data, 3, 3);
 }
 
 static void erase()
@@ -87,20 +88,67 @@ int16_t x,y,r,c;
 
 vmode(1);
 
-
- 
+   // xreg(1, 0, 1);
+   // xreg(3,1,1);
+   // xreg(0,2,1);    
+   // xreg(0,3,1);   
+   // xreg(0,4,1);        
+   // xreg(0,6,1);    
+   // xreg(1,7,1);    
 
     while(1)
     {
-     erase();
+   // erase();
     RIA_ADDR0 = 0;
     RIA_STEP0 = 0;// oh man i missed this for a while.. really throws off trying to plot a point when a read incrments it (that what seemed to be going on)
+
+
+    if(0)
+    {
+    // test bars
+    color=1;
+    for (loop =0;loop<320;loop++)
+        {
+        if (loop%20 ==0)
+            color++;
+         plot_line(loop,0,loop,240,color);
+        }
+
+    for (loop =0;loop<240;loop++)
+        {
+        if (loop%20 ==0)
+            color++;
+         plot_line(0,loop,320,loop,color);
+        }
+
+    }
+    if(1)
+    {
+
     for (loop =0;loop<WIDTH;loop++)
-            plot_line(loop,0,WIDTH-1-loop,240,(loop / 15)+1);
+            {
+                if (loop%20 ==0)
+                  {
+                    color++;
+                    color %= 16;
+                  }  
+                plot_line(loop,0,WIDTH-1-loop,240,color);
 
-    for (loop =0;loop<HEIGHT;loop++)
-            plot_line(0,loop,WIDTH-1,HEIGHT-1-loop ,(loop / 15)+1);
 
+            }
+    for (loop =HEIGHT-1;loop>-1;loop--)
+           {
+            if (loop%20 ==0)
+                  {
+                    color++;
+                    color %= 16;
+                  }  
+            plot_line(0,loop,WIDTH-1,HEIGHT-1-loop ,color);
+           }
+
+    }
+    if(0)
+    {
     for (loop2=0;loop2<10;loop2++)
       {
       r=(rand16()%25) +5;    
@@ -110,8 +158,14 @@ vmode(1);
       for (loop =0;loop<r;loop++)
         raster_circle(x,y,loop,c); 
       }
-    wait();
     }
+
+
+
+
+    //wait();
     }
+}
+
 
 

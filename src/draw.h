@@ -29,7 +29,6 @@ void raster_circle (int16_t x0, int16_t y0, int16_t radius, uint8_t color);
 
 void plot_ellipse_rect (int x0, int y0, int x1, int y1,uint8_t color);
 
-void plot_basic_bezier (int x0, int y0, int x1, int y1, int x2, int y2,uint8_t color);
 
 #endif
 
