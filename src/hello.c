@@ -24,11 +24,16 @@
 typedef int32_t fint32_t;
 
 
+#define VIDEO_MODE 1    // vga_320_240 ,76800 pixels  0x0000 to 0x32000
+
+//#define VIDEO_MODE 2    // vga_320_180  ,57600 pixels
+
+//#define VIDEO_MODE 3   // vga_640_480  ,307200 pixels
+//#define VIDEO_MODE 4   // vga_640_360   ,230400 pixels
 
 static void vmode(uint16_t data)
 {
     xreg(data, 0, 1);
-   // xreg(data, 3, 3);
 }
 
 static void erase()
@@ -77,95 +82,108 @@ static void wait()
 //-----------------------------------------------------
 
 
-
 void main()
 {
 int16_t loop=0;
-int16_t loop2=0;
-uint8_t color=2;
-int16_t x,y,r,c;
+int16_t loop2=10;
+uint8_t color=1;
 
+vmode(VIDEO_MODE);
+erase();
 
-vmode(1);
+//plot_line(1,1,319,239,1);
+        loop2--;
+#define FAST
 
-   // xreg(1, 0, 1);
-   // xreg(3,1,1);
-   // xreg(0,2,1);    
-   // xreg(0,3,1);   
-   // xreg(0,4,1);        
-   // xreg(0,6,1);    
-   // xreg(1,7,1);    
+#ifdef FAST
 
     while(1)
     {
-   // erase();
-    RIA_ADDR0 = 0;
-    RIA_STEP0 = 0;// oh man i missed this for a while.. really throws off trying to plot a point when a read incrments it (that what seemed to be going on)
-
-
-    if(0)
+    loop2--;
+    for (loop =0;loop<WIDTH;loop++)
     {
-    // test bars
-    color=1;
-    for (loop =0;loop<320;loop++)
-        {
-        if (loop%20 ==0)
-            color++;
-         plot_line(loop,0,loop,240,color);
-        }
+            plot_line(160,120,loop,0,color);
+            if (loop % 20 ==1)
+            color ++;
+            color %= 16;
+    }     
 
-    for (loop =0;loop<240;loop++)
-        {
-        if (loop%20 ==0)
-            color++;
-         plot_line(0,loop,320,loop,color);
-        }
 
+    for (loop =0;loop<HEIGHT;loop++)
+    {
+        plot_line(319,loop,160,120,color);
+        if (loop % 20 ==1)
+        color ++;
+        color %= 16;
+    }     
+
+
+
+    for (loop =WIDTH-1;loop>-1;loop--)
+        {
+       plot_line(160,120,loop,239,color);
+        if (loop % 20 ==1)
+        color ++;
+        color %= 16;
+        }     
+
+
+    for (loop =HEIGHT-1;loop>-1;loop--)
+    {
+           plot_line(160,120,0,loop  ,color);
+        if (loop % 20 ==1)
+        color ++;
+        color %= 16;
+        }             
+        color ++;
+        color %= 16;
+
+  
     }
-    if(1)
+#else
+RIA_STEP0=0;
+    while(1)
     {
 
     for (loop =0;loop<WIDTH;loop++)
-            {
-                if (loop%20 ==0)
-                  {
-                    color++;
-                    color %= 16;
-                  }  
-                plot_line(loop,0,WIDTH-1-loop,240,color);
-
-
-            }
-    for (loop =HEIGHT-1;loop>-1;loop--)
-           {
-            if (loop%20 ==0)
-                  {
-                    color++;
-                    color %= 16;
-                  }  
-            plot_line(0,loop,WIDTH-1,HEIGHT-1-loop ,color);
-           }
-
-    }
-    if(0)
     {
-    for (loop2=0;loop2<10;loop2++)
-      {
-      r=(rand16()%25) +5;    
-      x=rand16()%(320-r);
-      y=rand16()%(240-r);
-      c=rand16()%16;
-      for (loop =0;loop<r;loop++)
-        raster_circle(x,y,loop,c); 
-      }
+            plot_line_original(160,120,loop,0,color);
+            if (loop % 20 ==1)
+            color ++;
+            color %= 16;
+    }     
+
+    for (loop =0;loop<HEIGHT;loop++)
+    {
+        plot_line_original(319,loop,160,120,color);
+        if (loop % 20 ==1)
+        color ++;
+        color %= 16;
+    }     
+
+    for (loop =WIDTH-1;loop>-1;loop--)
+        {
+       plot_line_original(160,120,loop,239,color);
+        if (loop % 20 ==1)
+        color ++;
+        color %= 16;
+        }     
+
+
+    for (loop =HEIGHT-1;loop>-1;loop--)
+    {
+           plot_line_original(160,120,0,loop  ,color);
+        if (loop % 20 ==1)
+        color ++;
+        color %= 16;
+        }             
+        color ++;
+        color %= 16;
+
+  
+
     }
+#endif
 
-
-
-
-    //wait();
     }
-}
-
-
 

@@ -5,6 +5,8 @@ need some type of bounds checking
 or not?
 */
 
+
+
 void setPixel(int16_t x, int16_t y, uint8_t color) 
 {
  // if (color > 15)
@@ -19,7 +21,7 @@ void setPixel(int16_t x, int16_t y, uint8_t color)
 
 
 }
-void plot_line(int16_t x0, int16_t y0, int16_t  x1, int16_t y1,uint8_t color)
+void plot_line_original(int16_t x0, int16_t y0, int16_t  x1, int16_t y1,uint8_t color)
 {
 
   int16_t dx =  abs (x1 - x0), sx = x0 < x1 ? 1 : -1;
@@ -34,7 +36,8 @@ void plot_line(int16_t x0, int16_t y0, int16_t  x1, int16_t y1,uint8_t color)
     if (e2 <= dx) { err += dx; y0 += sy; } /* e_xy+e_y < 0 */
   }
 }// end drawline
-void plot_line_original(int16_t x0, int16_t y0, int16_t  x1, int16_t y1,uint8_t color)
+
+void plot_line(int16_t x0, int16_t y0, int16_t  x1, int16_t y1,uint8_t color)
 {
 int loop;
 struct msarrline myline;
@@ -54,18 +57,23 @@ RIA_ADDR0 = 0xE000;
     xreg(0xe000,32,1);
 
 }// end drawline
-void  push_unit16(uint16_t val)
-{
-    RIA_RW0 = 
-}
+
+
+
 void plot_circle (int16_t xm, int16_t ym, int16_t r,uint8_t color)
 {
+  int16_t x = -r, y = 0, err = 2-2*r; /* II. Quadrant */ 
+  
   RIA_ADDR0 = 0xE000;
   RIA_STEP0 =1;
 
-  RIA_RW0 = xm << 
-  
-  int16_t x = -r, y = 0, err = 2-2*r; /* II. Quadrant */ 
+  RIA_RW0 = (xm >> 8); RIA_RW0 = (xm & 0xFF00);
+  RIA_RW0 = (ym >> 8); RIA_RW0 = (ym & 0xFF00);
+  RIA_RW0 = (r >> 8);  RIA_RW0 = (r & 0xFF00);
+  RIA_RW0 = color;
+
+
+
    do {
       setPixel (xm-x, ym+y,color); /*   I. Quadrant */
       setPixel (xm-y, ym-x,color); /*  II. Quadrant */
@@ -78,42 +86,9 @@ void plot_circle (int16_t xm, int16_t ym, int16_t r,uint8_t color)
 }
 
 
-void plot_line_original(int16_t x0, int16_t y0, int16_t  x1, int16_t y1,uint8_t color)
-{
- int16_t dx =  abs (x1 - x0), sx = x0 < x1 ? 1 : -1;
-  int16_t dy = -abs (y1 - y0), sy = y0 < y1 ? 1 : -1; 
-  int16_t err = dx + dy, e2; /* error value e_xy */
- 
-  for (;;){  /* loop */
-    setPixel(x0,y0,color);
-    if (x0 == x1 && y0 == y1) break;
-    e2 = 2 * err;
-    if (e2 >= dy) { err += dy; x0 += sx; } /* e_xy+e_x > 0 */
-    if (e2 <= dx) { err += dx; y0 += sy; } /* e_xy+e_y < 0 */
-  }
-}// end drawline
-void plot_line_original(int16_t x0, int16_t y0, int16_t  x1, int16_t y1,uint8_t color)
-{
-int loop;
-struct msarrline myline;
-uint8_t * bytearray = (uint8_t *) &myline;
 
-myline.x0 = x0;
-myline.x1 =x1;
-myline.y0 = y0;
-myline.y1 = y1;
-myline.color = color;
-RIA_ADDR0 = 0xE000;
 
-    for (loop = 0; loop < sizeof(myline); ++loop) {
-        RIA_RW0 = * bytearray++;
-    }
-
-    xreg(0xe000,32,1);
-
-}// end drawline
-
-void plot_circle (int16_t xm, int16_t ym, int16_t r,uint8_t color)
+void plot_circle_original (int16_t xm, int16_t ym, int16_t r,uint8_t color)
 {
    int16_t x = -r, y = 0, err = 2-2*r; /* II. Quadrant */ 
    do {
