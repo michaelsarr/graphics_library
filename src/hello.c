@@ -91,11 +91,28 @@ uint8_t color=1;
 vmode(VIDEO_MODE);
 erase();
 
-//plot_line(1,1,319,239,1);
-        loop2--;
 #define FAST
 
 #ifdef FAST
+
+
+
+
+while(1)
+{
+uint16_t x = rand16() % 310;
+uint16_t y = rand16() % 230;
+uint16_t r = rand16() % 10;
+
+//for (loop=1;loop<5;++loop)
+ plot_circle(x,y,r,color);
+
+color++;
+if (color >15)
+color=2;
+//ait();
+}
+
 
     while(1)
     {
@@ -103,6 +120,8 @@ erase();
     for (loop =0;loop<WIDTH;loop++)
     {
             plot_line(160,120,loop,0,color);
+
+            
             if (loop % 20 ==1)
             color ++;
             color %= 16;

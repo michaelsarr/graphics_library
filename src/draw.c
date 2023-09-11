@@ -39,22 +39,20 @@ void plot_line_original(int16_t x0, int16_t y0, int16_t  x1, int16_t y1,uint8_t 
 
 void plot_line(int16_t x0, int16_t y0, int16_t  x1, int16_t y1,uint8_t color)
 {
-int loop;
-struct msarrline myline;
-uint8_t * bytearray = (uint8_t *) &myline;
+  RIA_ADDR0 = 0xE000;
+  RIA_STEP0 =1;
+// is the RIA_RW0 8 bits only
+RIA_RW0 = *((uint8_t * )(&x0));
+RIA_RW0 = *(((uint8_t * )(&x0))+1);
+RIA_RW0 = *((uint8_t * )(&y0));
+RIA_RW0 = *(((uint8_t * )(&y0))+1);
+RIA_RW0 = *((uint8_t * )(&x1));
+RIA_RW0 = *(((uint8_t * )(&x1))+1);
+RIA_RW0 = *((uint8_t * )(&y1));
+RIA_RW0 = *(((uint8_t * )(&y1))+1);
+RIA_RW0 = color;
 
-myline.x0 = x0;
-myline.x1 =x1;
-myline.y0 = y0;
-myline.y1 = y1;
-myline.color = color;
-RIA_ADDR0 = 0xE000;
-
-    for (loop = 0; loop < sizeof(myline); ++loop) {
-        RIA_RW0 = * bytearray++;
-    }
-
-    xreg(0xe000,32,1);
+  xreg(0xE000,32,1);
 
 }// end drawline
 
@@ -67,22 +65,18 @@ void plot_circle (int16_t xm, int16_t ym, int16_t r,uint8_t color)
   RIA_ADDR0 = 0xE000;
   RIA_STEP0 =1;
 
-  RIA_RW0 = (xm >> 8); RIA_RW0 = (xm & 0xFF00);
-  RIA_RW0 = (ym >> 8); RIA_RW0 = (ym & 0xFF00);
-  RIA_RW0 = (r >> 8);  RIA_RW0 = (r & 0xFF00);
+RIA_RW0 = *((uint8_t * )(&xm));
+RIA_RW0 = *(((uint8_t * )(&xm))+1);
+RIA_RW0 = *((uint8_t * )(&ym));
+RIA_RW0 = *(((uint8_t * )(&ym))+1);
+RIA_RW0 = *((uint8_t * )(&r));
+RIA_RW0 = *(((uint8_t * )(&r))+1);
+
   RIA_RW0 = color;
 
+  xreg(0xE000,33,1);
 
 
-   do {
-      setPixel (xm-x, ym+y,color); /*   I. Quadrant */
-      setPixel (xm-y, ym-x,color); /*  II. Quadrant */
-      setPixel (xm+x, ym-y,color); /* III. Quadrant */
-      setPixel (xm+y, ym+x,color); /*  IV. Quadrant */
-      r = err;
-      if (r >  x) err += ++x*2+1; /* e_xy+e_x > 0 */
-      if (r <= y) err += ++y*2+1; /* e_xy+e_y < 0 */
-   } while (x < 0);
 }
 
 
@@ -139,8 +133,7 @@ void raster_circle (int16_t x0, int16_t y0, int16_t radius, uint8_t color)
   }
 }
 
-void
-plot_ellipse_rect (int x0, int y0, int x1, int y1,uint8_t color)
+void plot_ellipse_rect (int x0, int y0, int x1, int y1,uint8_t color)
 {
    int a = abs (x1 - x0), b = abs (y1 - y0), b1 = b & 1; /* values of diameter */
    long dx = 4 * (1 - a) * b * b, dy = 4 * (b1 + 1) * a * a; /* error increment */
