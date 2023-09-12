@@ -78,7 +78,26 @@ RIA_RW0 = *(((uint8_t * )(&r))+1);
 
 
 }
+void plot_triangle(uint16_t x, uint16_t y, uint16_t angle, uint16_t radius,uint8_t color)
+{
+  RIA_ADDR0 = 0xE000;
+  RIA_STEP0 =1;
 
+RIA_RW0 = *((uint8_t * )(&x));
+RIA_RW0 = *(((uint8_t * )(&x))+1);
+RIA_RW0 = *((uint8_t * )(&y));
+RIA_RW0 = *(((uint8_t * )(&y))+1);
+RIA_RW0 = *((uint8_t * )(&angle));
+RIA_RW0 = *(((uint8_t * )(&angle))+1);
+RIA_RW0 = *((uint8_t * )(&radius));
+RIA_RW0 = *(((uint8_t * )(&radius))+1);
+RIA_RW0 = color;
+
+  xreg(0xE000,34,1);
+
+
+
+}
 
 
 

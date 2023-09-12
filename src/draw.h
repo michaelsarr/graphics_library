@@ -31,11 +31,14 @@ struct msarrline
 };
 
 
+
 void plot_line(int16_t x0, int16_t y0, int16_t  x1, int16_t y1,uint8_t color);
 void plot_line_original(int16_t x0, int16_t y0, int16_t  x1, int16_t y1,uint8_t color);
 
 void plot_circle (int16_t xm, int16_t ym, int16_t r,uint8_t color);
 void plot_circle_original(int16_t xm, int16_t ym, int16_t r,uint8_t color);
+
+void plot_triangle(uint16_t x, uint16_t y, uint16_t angle, uint16_t radius,uint8_t color);
 
 void raster_circle (int16_t x0, int16_t y0, int16_t radius, uint8_t color);
 

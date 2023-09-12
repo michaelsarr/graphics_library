@@ -1,3 +1,5 @@
+
+
 /*
  * Copyright (c) 2023 Rumbledethumps
  *
@@ -18,7 +20,7 @@
 
 
 
-// i just started editing the brot32.c file 
+// i just started editing the brot32.c file
 
 // This version optimized for fixed point math on 8-bit processors
 typedef int32_t fint32_t;
@@ -80,129 +82,145 @@ static void wait()
     discard = RIA_RX;
 }
 //-----------------------------------------------------
+#define ball_count 25
+#define ball_radius 7
+uint16_t loop,loop2;
+void bouncing_ball(uint16_t count,uint8_t erase)
+{
+uint16_t xvel[ball_count];
+uint16_t yvel[ball_count];
+uint16_t x[ball_count];
+uint16_t y[ball_count];
+uint8_t color[ball_count];
+
+
+for(loop=0;loop<ball_count;++loop)
+{
+    xvel[loop] = 1+rand16()%5;
+    yvel[loop] = 1+rand16()%5;
+    x[loop] = rand16()%300;
+    y[loop] = rand16()%16;
+    color[loop] = rand16()%15;
+}
+while (count)
+{
+for(loop=0;loop < ball_count;++loop)
+  {
+  count--;
+  if (erase)
+  #ifdef FAST
+      plot_circle(x[loop],y[loop],ball_radius,0);
+  #else
+    plot_circle_original(x[loop],y[loop],ball_radius,0);
+  #endif
+   
+  x[loop]+= xvel[loop];
+  y[loop]+= yvel[loop];
+  #ifdef FAST
+      plot_circle(x[loop],y[loop],ball_radius,color[loop]);
+  #else
+    plot_circle_original(x[loop],y[loop],ball_radius,color[loop]);
+  #endif
+
+
+  if (y[loop] >= HEIGHT -5)
+    yvel[loop] = -1 * (rand16() %5);
+  if (y[loop] <= 5)
+    yvel[loop] =  rand16() %5;
+  if (x[loop] >= WIDTH -5)
+    xvel[loop] = -1 * (rand16() %5);
+  if (x[loop] <= 5)
+    xvel[loop] = rand16() %5;
+  }
+}
+
+
+}
+void colorfill(uint8_t color);
+
+void ballfill(uint16_t count)
+{
+for(loop=0;loop<count;++loop)
+#ifdef FAST
+ plot_circle(rand16()%319,rand16()%240,ball_radius,rand16()%15);
+#else
+plot_circle_original(rand16()%319,rand16()%240,ball_radius,rand16()%15);
+#endif
+}
+void linefill(uint16_t count)
+{
+for(loop=0;loop<count;++loop)
+#ifdef FAST
+ plot_line(rand16()%319,rand16()%240,rand16()%319,rand16()%240,rand16()%15);
+ #else
+ plot_line_original(rand16()%319,rand16()%240,rand16()%319,rand16()%240,rand16()%15);
+ #endif
+
+}
+void sleep(uint16_t t)
+{
+while(t)
+{printf(" ");--t; }
+}
 
 
 void main()
 {
-int16_t loop=0;
-int16_t loop2=10;
-uint8_t color=1;
 
 vmode(VIDEO_MODE);
 erase();
-
-#define FAST
-
-#ifdef FAST
-
-
+RIA_STEP0 =0;
 
 
 while(1)
 {
-uint16_t x = rand16() % 310;
-uint16_t y = rand16() % 230;
-uint16_t r = rand16() % 10;
+bouncing_ball(30000,1);
 
-//for (loop=1;loop<5;++loop)
- plot_circle(x,y,r,color);
-
-color++;
-if (color >15)
-color=2;
-//ait();
+  colorfill(1);
+bouncing_ball(30000,1);
+ballfill(7000);
+bouncing_ball(30000,1);
+linefill(3000);
+bouncing_ball(30000,1);
+bouncing_ball(30000,0);
 }
 
 
-    while(1)
+}// end main
+
+void colorfill(uint8_t color)
+{
+ for (loop =0;loop<WIDTH;loop++)
     {
-    loop2--;
-    for (loop =0;loop<WIDTH;loop++)
-    {
-            plot_line(160,120,loop,0,color);
-
-            
-            if (loop % 20 ==1)
-            color ++;
-            color %= 16;
-    }     
-
-
-    for (loop =0;loop<HEIGHT;loop++)
-    {
-        plot_line(319,loop,160,120,color);
-        if (loop % 20 ==1)
-        color ++;
-        color %= 16;
-    }     
-
-
-
-    for (loop =WIDTH-1;loop>-1;loop--)
-        {
-       plot_line(160,120,loop,239,color);
-        if (loop % 20 ==1)
-        color ++;
-        color %= 16;
-        }     
-
-
-    for (loop =HEIGHT-1;loop>-1;loop--)
-    {
-           plot_line(160,120,0,loop  ,color);
-        if (loop % 20 ==1)
-        color ++;
-        color %= 16;
-        }             
-        color ++;
-        color %= 16;
-
-  
-    }
+    #ifdef FAST
+    plot_line(320-loop,239,loop,0,color);
 #else
-RIA_STEP0=0;
-    while(1)
-    {
-
-    for (loop =0;loop<WIDTH;loop++)
-    {
-            plot_line_original(160,120,loop,0,color);
-            if (loop % 20 ==1)
+    plot_line_original(320-loop,239,loop,0,color);
+#endif
+     //       if (loop % 20 ==1)
             color ++;
             color %= 16;
+    //printf("a loop: %d\n",loop);
+    //sleep(10);
     }     
+
 
     for (loop =0;loop<HEIGHT;loop++)
     {
-        plot_line_original(319,loop,160,120,color);
-        if (loop % 20 ==1)
+            #ifdef FAST
+        plot_line(319,loop,0,HEIGHT-loop,color);
+        #else
+               plot_line_original(319,loop,0,HEIGHT-loop,color); 
+        #endif
+
+     //   if (loop % 20 ==1)
         color ++;
         color %= 16;
+    //        printf("b loop: %d\n",loop);
+    //        sleep(10);
     }     
 
-    for (loop =WIDTH-1;loop>-1;loop--)
-        {
-       plot_line_original(160,120,loop,239,color);
-        if (loop % 20 ==1)
-        color ++;
-        color %= 16;
-        }     
 
 
-    for (loop =HEIGHT-1;loop>-1;loop--)
-    {
-           plot_line_original(160,120,0,loop  ,color);
-        if (loop % 20 ==1)
-        color ++;
-        color %= 16;
-        }             
-        color ++;
-        color %= 16;
-
-  
-
-    }
-#endif
-
-    }
+}
 
