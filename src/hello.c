@@ -82,6 +82,7 @@ static void wait()
     discard = RIA_RX;
 }
 //-----------------------------------------------------
+#define FAST
 #define ball_count 25
 #define ball_radius 7
 uint16_t loop,loop2;
